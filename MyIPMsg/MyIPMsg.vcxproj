@@ -111,6 +111,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="app.cpp" />
+    <ClCompile Include="IPMsg.cpp" />
+    <ClCompile Include="tapi32u8.cpp" />
+    <ClCompile Include="tlib.cpp" />
+    <ClCompile Include="tmisc.cpp" />
+    <ClCompile Include="TWin.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="app.h" />
+    <ClInclude Include="hashtable.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="tapi32u8.h" />
+    <ClInclude Include="tlib.h" />
+    <ClInclude Include="tmisc.h" />
+    <ClInclude Include="TWin.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MyIPMsg.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
