@@ -1,6 +1,7 @@
 #pragma once
 #include"hashtable.h"
 #include"tlib.h"
+#include"tapi32u8.h"
 
 
 //窗体类基类
@@ -21,17 +22,17 @@ public:
 		DWORD			modalCount;
 		DWORD			twinId;
 		virtual void	Show(int mode = SW_SHOWDEFAULT);//显示窗口
-	  //  virtual BOOL	Create(LPCSTR className = NULL, LPCSTR title = "",//创建窗口
-   //     DWORD style = (WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN),
-			//DWORD exStyle = 0, HMENU hMenu = NULL);
-		//virtual BOOL	CreateU8(LPCSTR className = NULL, LPCSTR title = "",
-		//	DWORD style = (WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN),
-		//	DWORD exStyle = 0, HMENU hMenu = NULL);
+	    virtual BOOL	Create(LPCSTR className = NULL, LPCSTR title = "",//创建窗口
+        DWORD style = (WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN),
+			DWORD exStyle = 0, HMENU hMenu = NULL);
+		virtual BOOL	CreateU8(LPCSTR className = NULL, LPCSTR title = "",
+			DWORD style = (WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN),
+			DWORD exStyle = 0, HMENU hMenu = NULL);
 	    virtual BOOL	CreateW(const WCHAR *className = NULL, const WCHAR *title = L"",
 		DWORD style = (WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN),
 		DWORD exStyle = 0, HMENU hMenu = NULL);
 	     virtual	void	Destroy(void);
-	//
+	
 	     virtual BOOL	EvCommand(WORD wNotifyCode, WORD wID, LPARAM hwndCtl);
          virtual BOOL	EvSysCommand(WPARAM uCmdType, POINTS pos);
          virtual BOOL	EvCreate(LPARAM lParam);
@@ -78,10 +79,10 @@ public:
 	
 	     virtual UINT	GetDlgItemText(int ctlId, LPSTR buf, int len);
          virtual UINT	GetDlgItemTextW(int ctlId, WCHAR *buf, int len);
-	//	//virtual UINT	GetDlgItemTextU8(int ctlId, char *buf, int len);
+	     virtual UINT	GetDlgItemTextU8(int ctlId, char *buf, int len);
 	     virtual BOOL	SetDlgItemText(int ctlId, LPCSTR buf);
 	     virtual BOOL	SetDlgItemTextW(int ctlId, const WCHAR *buf);
-	//	//virtual BOOL	SetDlgItemTextU8(int ctlId, const char *buf);
+	     virtual BOOL	SetDlgItemTextU8(int ctlId, const char *buf);
 	     virtual int	GetDlgItemInt(int ctlId, BOOL *err = NULL, BOOL sign = TRUE);
 	     virtual BOOL	SetDlgItemInt(int ctlId, int val, BOOL sign = TRUE);
 	     virtual HWND	GetDlgItem(int ctlId);
@@ -89,13 +90,13 @@ public:
 		 virtual UINT	IsDlgButtonChecked(int ctlId);
 	     virtual BOOL	IsWindowVisible(void);
 	     virtual BOOL	EnableWindow(BOOL is_enable);
-	//
+	
 	     virtual	int		MessageBox(LPCSTR msg, LPCSTR title = "msg", UINT style = MB_OK);
 	     virtual	int		MessageBoxW(LPCWSTR msg, LPCWSTR title = L"msg", UINT style = MB_OK);
-	//	//virtual	int		MessageBoxU8(LPCSTR msg, LPCSTR title = "msg", UINT style = MB_OK);
+	     virtual	int		MessageBoxU8(LPCSTR msg, LPCSTR title = "msg", UINT style = MB_OK);
 	     virtual BOOL	BringWindowToTop(void);
 	     virtual BOOL	SetForegroundWindow(void);
-	//	//virtual BOOL	SetForceForegroundWindow(void);
+	    // virtual BOOL	SetForceForegroundWindow(void);
 	     virtual BOOL	ShowWindow(int mode);
 	     virtual BOOL	PostMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
 	     virtual BOOL	PostMessageW(UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -110,11 +111,11 @@ public:
          virtual int    GetWindowText(LPSTR text, int size);//获取控件当前内容
 	     virtual BOOL	SetWindowText(LPCSTR text);//设置控件内容
 	     virtual BOOL	GetWindowTextW(WCHAR *text, int size);
-	    // virtual BOOL	GetWindowTextU8(char *text, int size);
+	     virtual BOOL	GetWindowTextU8(char *text, int size);
 	     virtual BOOL	SetWindowTextW(const WCHAR *text);
-	    // virtual BOOL	SetWindowTextU8(const char *text);
+	     virtual BOOL	SetWindowTextU8(const char *text);
 		 virtual int	GetWindowTextLengthW(void);
-	     //virtual int	GetWindowTextLengthU8(void);
+	     virtual int	GetWindowTextLengthU8(void);
 	     virtual BOOL	InvalidateRect(const RECT *rc, BOOL fErase);
 	     virtual LONG_PTR SetWindowLong(int index, LONG_PTR val);
 	     virtual WORD	SetWindowWord(int index, WORD val);

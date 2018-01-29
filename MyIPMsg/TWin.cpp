@@ -306,6 +306,77 @@ BOOL TWin::EventSystem(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 
 
+BOOL TWin::SetDlgItemTextU8(int ctlId, const char *buf)
+{
+	Wstr	wbuf(buf);
+
+	return	::SetDlgItemTextW(hWnd, ctlId, wbuf.s());//设置对话框中控件的文本和标题
+}
+
+
+
+int TWin::MessageBoxU8(LPCSTR msg, LPCSTR title, UINT style)
+{
+	Wstr	wmsg(msg);
+	Wstr	wtitle(title);
+
+
+	return	MessageBoxW(wmsg.s(), wtitle.s(), style);
+}
+
+int TWin::GetWindowTextU8(char *text, int len)
+{
+	Wstr	wbuf(len);
+
+	wbuf[0] = 0;
+	if (::GetWindowTextW(hWnd, wbuf.Buf(), len) < 0) return -1;
+
+	return	WtoU8(wbuf.s(), text, len);
+}
+
+BOOL TWin::SetWindowTextU8(const char *text)
+{
+	Wstr	wbuf(text);
+
+	return	::SetWindowTextW(hWnd, wbuf.s());
+}
+
+
+
+int TWin::GetWindowTextLengthU8(void)
+{
+	int		len = ::GetWindowTextLengthW(hWnd);
+	Wstr	wbuf(len + 1);
+
+	if (::GetWindowTextW(hWnd, wbuf.Buf(), len + 1) <= 0) return 0;
+
+	return	WtoU8(wbuf.s(), NULL, 0);
+}
+
+
+//BOOL TWin::SetForceForegroundWindow(void)
+//{
+//	DWORD	foreId, targId, svTmOut;
+//
+//	if (IsWinVista()) {
+//		TSwitchToThisWindow(hWnd, TRUE);
+//	}
+//
+//	foreId = ::GetWindowThreadProcessId(::GetForegroundWindow(), NULL);
+//	targId = ::GetWindowThreadProcessId(hWnd, NULL);
+//	if (foreId != targId)
+//		::AttachThreadInput(targId, foreId, TRUE);
+//	::SystemParametersInfo(SPI_GETFOREGROUNDLOCKTIMEOUT, 0, (void *)&svTmOut, 0);
+//	::SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, 0, 0);
+//	BOOL	ret = ::SetForegroundWindow(hWnd);
+//	::SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, (void *)(DWORD_PTR)svTmOut, 0);
+//	if (foreId != targId)
+//		::AttachThreadInput(targId, foreId, FALSE);
+//
+//	return	ret;
+//}
+
+
 
 
 
@@ -395,6 +466,9 @@ BOOL TWin::PreProcMsg(MSG *msg)
 
 	return	FALSE;
 }
+
+
+
 
 //窗口处理函数
 LRESULT TWin::WinProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -527,11 +601,6 @@ UINT TWin::GetDlgItemTextW(int ctlId, WCHAR *buf, int len)
 
 
 
-
-
-
-
-
 //移动窗口到指定位置
 BOOL TWin::MoveWindow(int x, int y, int cx, int cy, int bRepaint)
 {
@@ -590,14 +659,15 @@ BOOL TWin::Sleep(UINT mSec)
 
 
 
+UINT TWin::GetDlgItemTextU8(int ctlId, char *buf, int len)
+{
+	Wstr	wbuf(len);
 
+	*buf = 0;
+	GetDlgItemTextW(ctlId, wbuf.Buf(), len);
 
-
-
-
-
-
-
+	return	WtoU8(wbuf.s(), buf, len);
+}
 
 
 
@@ -714,4 +784,23 @@ WORD TWin::GetWindowWord(int index)
 WORD TWin::SetWindowWord(int index, WORD val)
 {
 	return	::SetWindowWord(hWnd, index, val);
+}
+
+
+
+BOOL TWin::CreateU8(LPCSTR className, LPCSTR title, DWORD style, DWORD exStyle, HMENU hMenu)
+{
+	Wstr	className_w(className, BY_UTF8);
+	Wstr	title_w(title, BY_UTF8);
+
+	return	CreateW(className_w.s(), title_w.s(), style, exStyle, hMenu);//执行完这一句就产生任务栏图标    
+}
+
+
+BOOL TWin::Create(LPCSTR className, LPCSTR title, DWORD style, DWORD exStyle, HMENU hMenu)
+{
+	Wstr	className_w(className, BY_MBCS);
+	Wstr	title_w(title, BY_MBCS);
+
+	return	CreateW(className_w.s(), title_w.s(), style, exStyle, hMenu);
 }

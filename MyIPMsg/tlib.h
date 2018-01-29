@@ -63,7 +63,7 @@
 enum StrMode { BY_UTF8, BY_MBCS };
 
 
-
+//#define IsWinVista()	(LOBYTE(LOWORD(TWinVersion)) >= 6 && TWinVersion < 0x80000000)
 
 
 

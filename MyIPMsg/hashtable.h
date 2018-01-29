@@ -105,4 +105,78 @@ typedef THashObjT<unsigned _int64> THashObj64;
 typedef THashTblT<unsigned _int64> THashTbl64;
 
 
+/* for internal use start */
+struct TResHashObj : THashObj {
+	void	*val;
+	TResHashObj(UINT _resId, void *_val) { hashId = _resId; val = _val; }
+	~TResHashObj() { free(val); }
+
+};
+
+
+class TResHash : public THashTbl {
+protected:
+	virtual BOOL IsSameVal(THashObj *obj, const void *val) {
+		return obj->hashId == *(u_int *)val;
+	}
+
+public:
+	TResHash(int _hashNum) : THashTbl(_hashNum) {}
+	TResHashObj	*Search(UINT resId) { return (TResHashObj *)THashTbl::Search(&resId, resId); }
+	void		Register(TResHashObj *obj) { THashTbl::Register(obj, obj->hashId); }
+};
+
+
+#define PAGE_SIZE	(4 * 1024)
+
+
+
+
+
+//class Condition {
+//protected:
+//	enum Kind { INIT_EVENT = 0, WAIT_EVENT, DONE_EVENT };
+//
+//	struct Event {
+//		HANDLE	hEvent;
+//		u_int	kind;	// Kind が秘るが compare and swap喘に u_int に。
+//		Event() { hEvent = 0; kind = INIT_EVENT; }
+//	};
+//	static Event			*gEvents;
+//	static volatile LONG	gEventMap;
+//	static BOOL				InitGlobalEvents();
+//	static const int		MaxThreads = 32;
+//
+//	BOOL			isInit;
+//	CRITICAL_SECTION cs;
+//	u_int			waitBits;
+//
+//public:
+//	Condition(void);
+//	~Condition();
+//
+//	BOOL Initialize(void);
+//	void UnInitialize(void);
+//
+//	void Lock(void) { ::EnterCriticalSection(&cs); }
+//	void UnLock(void) { ::LeaveCriticalSection(&cs); }
+//
+//	// ロックを函誼してから旋喘すること
+//	int  IsWait() { return waitBits ? TRUE : FALSE; }
+//
+//	BOOL Wait(DWORD timeout = INFINITE);
+//	void Notify(void);
+//};
+
+
+
+
+
+
+
+
+
+
+
+
 #endif 

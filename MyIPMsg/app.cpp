@@ -1,5 +1,6 @@
 #include"app.h"
 #include<debugapi.h>
+#include"tapi32u8.h"
 
 TApp* TApp::tapp = NULL;
 
@@ -70,26 +71,18 @@ BOOL TApp::PreProcMsg(MSG * msg)
 //窗口消息处理函数
 LRESULT CALLBACK TApp::WinProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	//TApp	*app = TApp::GetApp();//获得app对象指针
-	//TWin	*win = app->SearchWnd(hWnd);//从哈希表中根据窗口句柄找到对应的窗口类对象指针
+    TApp	*app = TApp::GetApp();
+   // TWin	*win = app->SearchWnd(hWnd); //Search方法是从wndArray中找到中找到窗口句柄为hWnd的TWin对象返回
+	//if (win)//找到TMainWin的对象win，调用win->WinProc(uMsg, wParam, lParam)。
+       // return	win->WinProc(uMsg, wParam, lParam);
 
-
-	//if (win)//如果在哈希表中找到了一个窗体对象
-	//	return	win->WinProc(uMsg, wParam, lParam); //执行该对象的窗口消息响应函数
-
-	//if ((win = app->preWnd))//对TMainWin窗口第一次消息处理进行的特殊判断。
+	//if ((win = app->preWnd))//这段代码没有进行分析，这段代码实际是对TMainWin窗口第一次消息处理进行的特殊判断。
 	//{
-	//	app->preWnd = NULL;
-	//	app->AddWinByWnd(win, hWnd);
-	//	return	win->WinProc(uMsg, wParam, lParam);
+	//    app->preWnd = NULL;
+	//    app->AddWinByWnd(win, hWnd);
+	//    return	win->WinProc(uMsg, wParam, lParam);
 	//}
-	switch (uMsg)
-	{
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		return 0;
-	}
-	return	::DefWindowProc(hWnd, uMsg, wParam, lParam);
+		return	::DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
 //*********************************************APP子类******************************************************************/
@@ -99,15 +92,26 @@ TMsgApp::TMsgApp(HINSTANCE _hI, LPSTR _cmdLine, int _nCmdShow) : TApp(_hI, _cmdL
 	//srand((UINT)Time());//提供随机种子
 }
 
+
 TMsgApp::~TMsgApp()
 {
 
 }
+
 //在这里创建各种窗口
 void TMsgApp::InitWindow(void)
-{
-    HWND hwnd = ::CreateWindowExW(WS_EX_OVERLAPPEDWINDOW,this->defaultClassW, defaultClassW, WS_OVERLAPPEDWINDOW,
-    250, 0, CW_USEDEFAULT, CW_USEDEFAULT,NULL, NULL, this->hI, NULL);
+{  
+
+
+
+	//AtoW(const char *src, WCHAR *dst, int bufsize, int max_len)
+	char str[200] ="Hello";
+	char *pstr;
+//	pstr = strdup(str);
+
+	
+    HWND hwnd = ::CreateWindowExW(WS_EX_OVERLAPPEDWINDOW,this->defaultClassW,L"Hello",WS_OVERLAPPEDWINDOW,
+    250, 0, CW_USEDEFAULT, 500,NULL, NULL, this->hI, NULL);
     ShowWindow(hwnd, nCmdShow);
     UpdateWindow(hwnd);
 }
