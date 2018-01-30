@@ -7,7 +7,7 @@
 //窗体类基类
 class TWin : public THashObj {
 protected:
-	TRect			rect;
+	    TRect			rect;
 		TRect			orgRect;
 		HACCEL			hAccel;
 		TWin			*parent;
@@ -25,9 +25,11 @@ public:
 	    virtual BOOL	Create(LPCSTR className = NULL, LPCSTR title = "",//创建窗口
         DWORD style = (WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN),
 			DWORD exStyle = 0, HMENU hMenu = NULL);
+
 		virtual BOOL	CreateU8(LPCSTR className = NULL, LPCSTR title = "",
 			DWORD style = (WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN),
 			DWORD exStyle = 0, HMENU hMenu = NULL);
+
 	    virtual BOOL	CreateW(const WCHAR *className = NULL, const WCHAR *title = L"",
 		DWORD style = (WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN),
 		DWORD exStyle = 0, HMENU hMenu = NULL);
@@ -138,12 +140,12 @@ public:
 //窗体哈希表
 class TWinHashTbl : public THashTbl {
 protected:
-	virtual BOOL	IsSameVal(THashObj *obj, const void *val) {
-		return ((TWin *)obj)->hWnd == *(HWND *)val;
+	virtual BOOL	IsSameVal(THashObj *obj, const void *val) {//实现比较函数
+		return ((TWin *)obj)->hWnd == *(HWND *)val;//如果窗体的句柄和表中的句柄值相同
 	}
 public:
 	TWinHashTbl(int _hashNum) : THashTbl(_hashNum) {}
 	virtual ~TWinHashTbl() {}
-	u_int	MakeHashId(HWND hWnd) { return DWORD_RDC(hWnd) * 0xf3f77d13; }
+	u_int	MakeHashId(HWND hWnd) { return DWORD_RDC(hWnd) * 0xf3f77d13; }//把窗口句柄转换成整型数
 };
 

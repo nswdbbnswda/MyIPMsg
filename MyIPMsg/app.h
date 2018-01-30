@@ -36,6 +36,8 @@ public:
 	TWin	*SearchWnd(HWND hWnd) {//查找窗口
 		return (TWin *)hash->Search(&hWnd, hash->MakeHashId(hWnd));
 	}
+
+	int GetHashNum() { return hash->GetRegisterNum(); }//获得哈希表中的元素个数
 	static TApp *GetApp() { return tapp; }//获得APP指针
 	static void Idle(DWORD timeout = 0);
 	static HINSTANCE GetInstance() { return tapp->hI; }	//获得程序的实例句柄									   											       

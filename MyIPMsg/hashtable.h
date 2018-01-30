@@ -5,9 +5,9 @@
 #include"tlib.h"
 
 
-template<class T> class THashTblT;
+template<typename T> class THashTblT;
 
-template<class T>
+template<typename T>
 class THashObjT {
 public:
 	THashObjT	*prevHash;
@@ -18,7 +18,7 @@ public:
 	THashObjT() { prevHash = nextHash = NULL; hashId = 0; }
 	virtual ~THashObjT() { if (prevHash && prevHash != this) UnlinkHash(); }
 
-	virtual BOOL LinkHash(THashObjT *top) {
+	virtual BOOL LinkHash(THashObjT *top) {//头插法双向链表
 		if (prevHash) return FALSE;
 		this->nextHash = top->nextHash;
 		this->prevHash = top;
@@ -26,7 +26,7 @@ public:
 		top->nextHash = this;
 		return TRUE;
 	}
-	virtual BOOL UnlinkHash() {
+	virtual BOOL UnlinkHash() {//删除一个节点
 		if (!prevHash) return FALSE;
 		prevHash->nextHash = nextHash;
 		nextHash->prevHash = prevHash;
@@ -37,7 +37,7 @@ public:
 };
 
 //哈希表
-template<class T>
+template<typename T>
 class THashTblT {
 protected:
 	THashObjT<T>	*hashTbl;
@@ -45,7 +45,6 @@ protected:
 	int				registerNum;
 	BOOL			isDeleteObj;
 	virtual BOOL	IsSameVal(THashObjT<T> *, const void *val) = 0;
-
 public:
 	THashTblT(int _hashNum = 0, BOOL _isDeleteObj = TRUE) {
 		hashTbl = NULL;
@@ -54,8 +53,8 @@ public:
 		if ((hashNum = _hashNum) > 0) Init(hashNum);
 	}
 	virtual ~THashTblT() { UnInit(); }
-	virtual BOOL Init(int _hashNum) {
-		if ((hashTbl = new THashObjT<T>[hashNum = _hashNum]) == NULL) {//创建一个数组
+	virtual BOOL Init(int _hashNum) {//创建表
+		if ((hashTbl = new THashObjT<T>[hashNum = _hashNum]) == NULL) {//创建哈希表
 			return	FALSE;	// VC4's new don't occur exception
 		}
 		for (int i = 0; i < hashNum; i++) {
@@ -64,8 +63,9 @@ public:
 		}
 		registerNum = 0;
 		return	TRUE;
+	
 	}
-	virtual void UnInit() {
+	virtual void UnInit() {//销毁表
 		if (!hashTbl) return;
 		if (isDeleteObj) {
 			for (int i = 0; i < hashNum && registerNum > 0; i++) {
@@ -82,27 +82,29 @@ public:
 		hashTbl = NULL;
 		registerNum = 0;
 	}
-	virtual void Register(THashObjT<T> *obj, T hash_id) {
+	virtual void Register(THashObjT<T> *obj, T hash_id) {//插入一个元素
 		obj->hashId = hash_id;
 		if (obj->LinkHash(hashTbl + (hash_id % hashNum))) registerNum++;
 	}
 	virtual void UnRegister(THashObjT<T> *obj) {
 		if (obj->UnlinkHash()) registerNum--;
 	}
-	virtual THashObjT<T> *Search(const void *data, T hash_id) {
-		THashObjT<T> *top = hashTbl + (hash_id % hashNum);
+	virtual THashObjT<T> *Search(const void *data, T hash_id) {//在哈希表中查找一个元素
+		THashObjT<T> *top = hashTbl + (hash_id % hashNum);//找到表头
 		for (THashObjT<T> *obj = top->nextHash; obj != top; obj = obj->nextHash) {
 			if (obj->hashId == hash_id && IsSameVal(obj, data)) return obj;
 		}
 		return	NULL;
 	}
-	virtual int		GetRegisterNum() { return registerNum; }
-};
 
-typedef THashObjT<unsigned int>	THashObj;
-typedef THashTblT<unsigned int>	THashTbl;
-typedef THashObjT<unsigned _int64> THashObj64;
-typedef THashTblT<unsigned _int64> THashTbl64;
+	virtual int		GetRegisterNum() { return registerNum; }//获得哈希表中元素个数
+
+
+};
+typedef THashObjT<u_int>	THashObj;
+typedef THashTblT<u_int>	THashTbl;
+typedef THashObjT<unsigned long long > THashObj64;
+typedef THashTblT<unsigned long long> THashTbl64;
 
 
 /* for internal use start */

@@ -5,6 +5,9 @@
 #include"hashtable.h"
 
 
+typedef signed _int64 int64;
+typedef unsigned _int64 uint64;
+
 #define WINEXEC_ERR_MAX		31
 #define TLIB_SLEEPTIMER		32000
 

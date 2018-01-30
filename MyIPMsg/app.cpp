@@ -1,6 +1,7 @@
 #include"app.h"
 #include<debugapi.h>
 #include"tapi32u8.h"
+#include"TMainWin.h"
 
 TApp* TApp::tapp = NULL;
 
@@ -15,10 +16,13 @@ TApp::TApp(HINSTANCE _hI, LPSTR _cmdLine, int _nCmdShow)
 	defaultClassW = L"tapp";//宽字符版本
 	tapp = this;
 	twinId = 1;
+	hash = new TWinHashTbl(100);//实例化一个哈希表
 }
 
 TApp::~TApp()
 {
+	delete mainWnd;
+	if (hash) delete hash;
 }
 
 BOOL TApp::InitApp(void)
@@ -72,9 +76,9 @@ BOOL TApp::PreProcMsg(MSG * msg)
 LRESULT CALLBACK TApp::WinProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     TApp	*app = TApp::GetApp();
-   // TWin	*win = app->SearchWnd(hWnd); //Search方法是从wndArray中找到中找到窗口句柄为hWnd的TWin对象返回
-	//if (win)//找到TMainWin的对象win，调用win->WinProc(uMsg, wParam, lParam)。
-       // return	win->WinProc(uMsg, wParam, lParam);
+    TWin	*win = app->SearchWnd(hWnd); //Search方法是从wndArray中找到中找到窗口句柄为hWnd的TWin对象返回
+	if (win)//找到TMainWin的对象win，调用win->WinProc(uMsg, wParam, lParam)。
+        return	win->WinProc(uMsg, wParam, lParam);
 
 	//if ((win = app->preWnd))//这段代码没有进行分析，这段代码实际是对TMainWin窗口第一次消息处理进行的特殊判断。
 	//{
@@ -101,17 +105,6 @@ TMsgApp::~TMsgApp()
 //在这里创建各种窗口
 void TMsgApp::InitWindow(void)
 {  
-
-
-
-	//AtoW(const char *src, WCHAR *dst, int bufsize, int max_len)
-	char str[200] ="Hello";
-	char *pstr;
-//	pstr = strdup(str);
-
-	
-    HWND hwnd = ::CreateWindowExW(WS_EX_OVERLAPPEDWINDOW,this->defaultClassW,L"Hello",WS_OVERLAPPEDWINDOW,
-    250, 0, CW_USEDEFAULT, 500,NULL, NULL, this->hI, NULL);
-    ShowWindow(hwnd, nCmdShow);
-    UpdateWindow(hwnd);
+	mainWnd = new TMainWin;
+	mainWnd->CreateU8(this->defaultClass);
 }

@@ -1,21 +1,21 @@
 #include "TWin.h"
 #include"app.h"
-
+#include<stdlib.h>
 TWin::TWin(TWin *_parent)
 {
 	hWnd = 0;
 	hAccel = NULL;
-	rect.left = CW_USEDEFAULT;
-	rect.right = CW_USEDEFAULT;
-	rect.top = CW_USEDEFAULT;
-	rect.bottom = CW_USEDEFAULT;
+	rect.left = 400;
+	rect.right = 1000;//宽度
+	rect.top = 150;//矩形到上边界距离为130
+	rect.bottom = 600;//窗口高度
 	orgRect = rect;
 	parent = _parent;
 	sleepBusy = FALSE;
 	isUnicode = TRUE;
 	scrollHack = TRUE;
 	modalCount = 0;
-	//twinId = TApp::GenTWinID();
+	twinId = TApp::GenTWinID();
 }
 
 //析构函数
@@ -25,7 +25,7 @@ TWin::~TWin()
 }
 
 
-
+//销毁窗口
 void TWin::Destroy(void)
 {
 	if (::IsWindow(hWnd))
@@ -83,9 +83,10 @@ BOOL TWin::EvDrawItem(UINT ctlID, DRAWITEMSTRUCT *lpDis)
 	return	FALSE;
 }
 
-//销毁
+//销毁窗口
 BOOL TWin::EvDestroy(void)
 {
+	PostQuitMessage(0);
 	return	FALSE;
 }
 
@@ -202,7 +203,7 @@ BOOL TWin::EvActivateApp(BOOL fActivate, DWORD dwThreadID)
 	return	FALSE;
 }
 
-//激活
+//激活窗口
 BOOL TWin::EvActivate(BOOL fActivate, DWORD fMinimized, HWND hActiveWnd)
 {
 	return	FALSE;
@@ -214,18 +215,20 @@ BOOL TWin::EvWindowPosChanging(WINDOWPOS *pos)
 	return	FALSE;
 }
 
+//窗口焦点被改变
 BOOL TWin::EvWindowPosChanged(WINDOWPOS *pos)
 {
 	return	FALSE;
 }
 
-
+//字符事件
 BOOL TWin::EvChar(WCHAR code, LPARAM keyData)
 {
 	return	FALSE;
 }
 
 
+//滚动条事件
 BOOL TWin::EventScrollWrapper(UINT uMsg, int nCode, int nPos, HWND scrollBar)
 {
 	if (scrollHack) {
@@ -246,11 +249,13 @@ BOOL TWin::EventScroll(UINT uMsg, int nCode, int nPos, HWND scrollBar)
 	return	FALSE;
 }
 
+//按钮事件
 BOOL TWin::EventButton(UINT uMsg, int nHitTest, POINTS pos)
 {
 	return	FALSE;
 }
 
+//热键事件
 BOOL TWin::EventKey(UINT uMsg, int nVirtKey, LONG lKeyData)
 {
 	return	FALSE;
@@ -261,6 +266,7 @@ BOOL TWin::EventMenuLoop(UINT uMsg, BOOL fIsTrackPopupMenu)
 	return	FALSE;
 }
 
+//初始化菜单
 BOOL TWin::EventInitMenu(UINT uMsg, HMENU hMenu, UINT uPos, BOOL fSystemMenu)
 {
 	return	FALSE;
@@ -268,11 +274,12 @@ BOOL TWin::EventInitMenu(UINT uMsg, HMENU hMenu, UINT uPos, BOOL fSystemMenu)
 
 
 
-
+//菜单被选中
 BOOL TWin::EvMenuSelect(UINT uItem, UINT fuFlag, HMENU hMenu)
 {
 	return	FALSE;
 }
+
 
 BOOL TWin::EvDropFiles(HDROP hDrop)
 {
@@ -284,28 +291,32 @@ BOOL TWin::EventCtlColor(UINT uMsg, HDC hDcCtl, HWND hWndCtl, HBRUSH *result)
 	return	FALSE;
 }
 
+//焦点变化事件
 BOOL TWin::EventFocus(UINT uMsg, HWND hFocusWnd)
 {
 	return	FALSE;
 }
 
+//app事件
 BOOL TWin::EventApp(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	return	FALSE;
 }
 
+//用户事件
 BOOL TWin::EventUser(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	return	FALSE;
+return	FALSE;
 }
 
+//系统事件
 BOOL TWin::EventSystem(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	return	FALSE;
 }
 
 
-
+//设置子控件文字内容
 BOOL TWin::SetDlgItemTextU8(int ctlId, const char *buf)
 {
 	Wstr	wbuf(buf);
@@ -314,7 +325,7 @@ BOOL TWin::SetDlgItemTextU8(int ctlId, const char *buf)
 }
 
 
-
+//消息弹窗UTF8格式
 int TWin::MessageBoxU8(LPCSTR msg, LPCSTR title, UINT style)
 {
 	Wstr	wmsg(msg);
@@ -323,7 +334,7 @@ int TWin::MessageBoxU8(LPCSTR msg, LPCSTR title, UINT style)
 
 	return	MessageBoxW(wmsg.s(), wtitle.s(), style);
 }
-
+//获得窗口上的内容并且返回UTF-8格式
 int TWin::GetWindowTextU8(char *text, int len)
 {
 	Wstr	wbuf(len);
@@ -333,7 +344,7 @@ int TWin::GetWindowTextU8(char *text, int len)
 
 	return	WtoU8(wbuf.s(), text, len);
 }
-
+//设置窗口上的文字内容
 BOOL TWin::SetWindowTextU8(const char *text)
 {
 	Wstr	wbuf(text);
@@ -342,7 +353,7 @@ BOOL TWin::SetWindowTextU8(const char *text)
 }
 
 
-
+//获得窗口文字内容的长度
 int TWin::GetWindowTextLengthU8(void)
 {
 	int		len = ::GetWindowTextLengthW(hWnd);
@@ -378,11 +389,6 @@ int TWin::GetWindowTextLengthU8(void)
 
 
 
-
-
-
-
-
 //创建窗口
 BOOL TWin::CreateW(const WCHAR *className, const WCHAR *title, DWORD style, DWORD exStyle,
 	HMENU hMenu)
@@ -391,13 +397,16 @@ BOOL TWin::CreateW(const WCHAR *className, const WCHAR *title, DWORD style, DWOR
 		className = TApp::GetApp()->GetDefaultClassW();
 	}
 
-	TApp::GetApp()->AddWin(this);
+	//TApp::GetApp()->AddWin(this);//把对象加入到哈希表中
+
 	if ((hWnd = ::CreateWindowExW(exStyle, className, title, style,
-		rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
-		parent ? parent->hWnd : NULL, hMenu, TApp::GetInstance(), NULL)) == NULL)
-		return	TApp::GetApp()->DelWin(this), FALSE;
+		rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, parent ? parent->hWnd : NULL, hMenu, TApp::GetInstance(), NULL)) == NULL)
+		return TApp::GetApp()->DelWin(this), FALSE;
 	else
-		return	TRUE;
+	{
+		TApp::GetApp()->AddWinByWnd(this, hWnd);//把这个窗口放到哈希表中,以窗口句柄值为索引值
+		this->Show(1);//显示窗口
+	}
 }
 
 
@@ -444,21 +453,21 @@ LRESULT TWin::SendDlgItemMessage(int idCtl, UINT uMsg, WPARAM wParam, LPARAM lPa
 	return	::SendDlgItemMessage(hWnd, idCtl, uMsg, wParam, lParam);
 }
 
-
+//向控件窗口发送消息
 LRESULT TWin::SendDlgItemMessageW(int idCtl, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	return	::SendDlgItemMessageW(hWnd, idCtl, uMsg, wParam, lParam);
 }
 
 
-
+//对不感冒消息进行默认处理
 LRESULT TWin::DefWindowProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	return	isUnicode ? ::DefWindowProcW(hWnd, uMsg, wParam, lParam) :
 		::DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
-
+//消息预处理
 BOOL TWin::PreProcMsg(MSG *msg)
 {
 	if (hAccel)
@@ -468,20 +477,235 @@ BOOL TWin::PreProcMsg(MSG *msg)
 }
 
 
-
-
 //窗口处理函数
 LRESULT TWin::WinProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	return LRESULT();
-}
+	switch (uMsg)
+	{
+	case WM_LBUTTONDOWN:
+		MessageBox("L", "Tip!", 0);
+		break;
 
+	case WM_DESTROY:
+		EvDestroy();//关闭窗口
+		break;
+	case WM_CREATE:
+		MessageBox("Hello,World!", "Tip!", 0);
+		break;
+	}
+
+	return DefWindowProc(uMsg, wParam, lParam);
+	//BOOL	done = FALSE;
+	//LRESULT	result = 0;
+
+	//switch (uMsg)
+	//{
+	//case WM_CREATE:
+
+	//	GetWindowRect(&orgRect);
+	//	done = EvCreate(lParam);// TWin的WM_CREATE消息交由EvCreate函数进行处理
+	//	break;
+
+	//case WM_CLOSE:
+	//	done = EvClose();
+	//	break;
+
+	//case WM_COMMAND:
+	//	done = EvCommand(HIWORD(wParam), LOWORD(wParam), lParam);
+	//	break;
+
+	//case WM_SYSCOMMAND:
+	//	done = EvSysCommand(wParam, MAKEPOINTS(lParam));
+	//	break;
+
+	//case WM_TIMER://?会主动触发，即使用户不进行任何动作
+	//	done = EvTimer(wParam, (TIMERPROC)lParam);
+	//	break;
+
+	//case WM_DESTROY://关闭窗口的时候会响应这里
+	//	done = EvDestroy();
+	//	break;
+
+	//case WM_NCDESTROY://双击会响应
+	//	if (!::IsIconic(hWnd)) GetWindowRect(&rect);
+	//	if (!EvNcDestroy())	// hWndを0にする前に呼び出す
+	//		DefWindowProc(uMsg, wParam, lParam);
+	//	done = TRUE;
+	//	TApp::GetApp()->DelWin(this);
+	//	hWnd = 0;
+	//	break;
+
+	//case WM_QUERYENDSESSION:
+	//	result = EvQueryEndSession((BOOL)wParam, (BOOL)lParam);
+	//	done = TRUE;
+	//	break;
+
+	//case WM_ENDSESSION:
+	//	done = EvEndSession((BOOL)wParam, (BOOL)lParam);
+	//	break;
+
+	//case WM_QUERYOPEN:
+	//	result = EvQueryOpen();
+	//	done = TRUE;
+	//	break;
+
+	//case WM_PAINT://会响应
+	//	done = EvPaint();
+	//	break;
+
+	//case WM_NCPAINT://会响应
+	//	done = EvNcPaint((HRGN)wParam);
+	//	break;
+
+	//case WM_SIZE://会响应
+	//	done = EvSize((UINT)wParam, LOWORD(lParam), HIWORD(lParam));
+	//	break;
+
+	//case WM_MOVE://会响应
+	//	done = EvMove(LOWORD(lParam), HIWORD(lParam));
+	//	break;
+
+	//case WM_SHOWWINDOW:
+	//	done = EvShowWindow((BOOL)wParam, (int)lParam);
+	//	break;
+
+	//case WM_GETMINMAXINFO://会响应
+	//	done = EvGetMinMaxInfo((MINMAXINFO *)lParam);
+	//	break;
+
+	//case WM_SETCURSOR://鼠标出现在窗口上面的时候就会响应
+	//	result = done = EvSetCursor((HWND)wParam, LOWORD(lParam), HIWORD(lParam));
+	//	break;
+
+	//case WM_MOUSEMOVE://只要鼠标出现在右下角那个图标上就会进行响应
+	//	done = EvMouseMove((UINT)wParam, MAKEPOINTS(lParam));// WM_MOUSEMOVE消息交由EvMouseMove处理
+	//	break;
+
+	//case WM_NCHITTEST:
+	//	done = EvNcHitTest(MAKEPOINTS(lParam), &result);
+	//	break;
+
+	//case WM_MEASUREITEM:
+	//	result = done = EvMeasureItem((UINT)wParam, (LPMEASUREITEMSTRUCT)lParam);
+	//	break;
+
+	//case WM_DRAWITEM:
+	//	result = done = EvDrawItem((UINT)wParam, (LPDRAWITEMSTRUCT)lParam);
+	//	break;
+
+	//case WM_NOTIFY://双击右下角的图标的时候进行响应
+	//	result = done = EvNotify((UINT)wParam, (LPNMHDR)lParam);
+	//	break;
+
+	//case WM_CONTEXTMENU:
+	//	result = done = EvContextMenu((HWND)wParam, MAKEPOINTS(lParam));
+	//	break;
+
+	//case WM_HOTKEY://热键
+	//	result = done = EvHotKey((int)wParam);
+	//	break;
+
+	//case WM_ACTIVATEAPP://双击右下角图标会响应
+	//	done = EvActivateApp((BOOL)wParam, (DWORD)lParam);
+	//	break;
+
+	//case WM_ACTIVATE://双击右下角图标会进行事件的响应
+	//	EvActivate(LOWORD(wParam), HIWORD(wParam), (HWND)lParam);
+	//	break;
+
+	//case WM_DROPFILES:
+	//	done = EvDropFiles((HDROP)wParam);
+	//	break;
+
+	//case WM_CHAR:
+	//	done = EvChar((WCHAR)wParam, lParam);
+	//	break;
+
+	//case WM_WINDOWPOSCHANGING://直接响应
+	//	done = EvWindowPosChanging((WINDOWPOS *)lParam);
+	//	break;
+
+	//case WM_WINDOWPOSCHANGED://直接响应
+	//	done = EvWindowPosChanged((WINDOWPOS *)lParam);
+	//	break;
+	//	//case语句没有后面没有写break,程序会一直执行下去，以下的各个case 语句执行的都是done = EventButton这句
+	//case WM_LBUTTONUP:
+	//case WM_RBUTTONUP:
+	//case WM_NCLBUTTONUP:
+	//case WM_NCRBUTTONUP:
+	//case WM_LBUTTONDOWN:
+	//case WM_RBUTTONDOWN:
+	//case WM_NCLBUTTONDOWN:
+	//case WM_NCRBUTTONDOWN:
+	//case WM_LBUTTONDBLCLK:
+	//case WM_RBUTTONDBLCLK:
+	//case WM_NCLBUTTONDBLCLK:
+	//case WM_NCRBUTTONDBLCLK:
+	//	done = EventButton(uMsg, (int)wParam, MAKEPOINTS(lParam));//按钮事件
+	//	break;
+
+
+	//case WM_KEYUP:
+
+	//case WM_KEYDOWN://键盘按下事件
+	//	done = EventKey(uMsg, (int)wParam, (LONG)lParam);
+	//	break;
+
+	//case WM_HSCROLL:
+	//case WM_VSCROLL:
+	//	done = EventScrollWrapper(uMsg, LOWORD(wParam), HIWORD(wParam), (HWND)lParam);
+	//	break;
+
+	//case WM_ENTERMENULOOP:
+	//case WM_EXITMENULOOP:
+	//	done = EventMenuLoop(uMsg, (BOOL)wParam);
+	//	break;
+
+	//case WM_INITMENU:
+	//case WM_INITMENUPOPUP:
+	//	done = EventInitMenu(uMsg, (HMENU)wParam, LOWORD(lParam), (BOOL)HIWORD(lParam));
+	//	break;
+
+	//case WM_MENUSELECT:
+	//	done = EvMenuSelect(LOWORD(wParam), HIWORD(wParam), (HMENU)lParam);
+	//	break;
+
+	//case WM_CTLCOLORBTN:
+	//case WM_CTLCOLORDLG:
+	//case WM_CTLCOLOREDIT:
+	//case WM_CTLCOLORLISTBOX:
+	//case WM_CTLCOLORMSGBOX:
+	//case WM_CTLCOLORSCROLLBAR:
+	//case WM_CTLCOLORSTATIC:
+	//	done = EventCtlColor(uMsg, (HDC)wParam, (HWND)lParam, (HBRUSH *)&result);
+	//	break;
+
+	//case WM_KILLFOCUS:
+	//case WM_SETFOCUS:
+	//	done = EventFocus(uMsg, (HWND)wParam);
+	//	break;
+
+	//default:
+	//	if (uMsg >= WM_APP && uMsg <= 0xBFFF) {
+	//		result = done = EventApp(uMsg, wParam, lParam);
+	//	}
+	//	else if (uMsg >= WM_USER && uMsg < WM_APP || uMsg >= 0xC000 && uMsg <= 0xFFFF) {
+	//		result = done = EventUser(uMsg, wParam, lParam);//用户自定义的事件交由EventUser处理
+	//	}
+	//	else {
+	//		result = done = EventSystem(uMsg, wParam, lParam);
+
+	//	}
+	//	break;
+	//}
+
+	//return	done ? result : DefWindowProc(uMsg, wParam, lParam);//进行了响应那么就返回0，否则的话就按默认处理
+}
 
 
 BOOL TWin::Idle(void)
 {
 	MSG		msg;
-
 	if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 	{
 		if (TApp::GetApp()->PreProcMsg(&msg))
@@ -491,7 +715,6 @@ BOOL TWin::Idle(void)
 		::DispatchMessage(&msg);
 		return	TRUE;
 	}
-
 	return	FALSE;
 }
 
@@ -528,7 +751,7 @@ UINT TWin::IsDlgButtonChecked(int ctlId)
 	return	::IsDlgButtonChecked(hWnd, ctlId);
 }
 
-
+//弹窗ANSI版本
 int TWin::MessageBox(LPCSTR msg, LPCSTR title, UINT style)
 {
 	modalCount++;
@@ -538,6 +761,7 @@ int TWin::MessageBox(LPCSTR msg, LPCSTR title, UINT style)
 	return	ret;
 }
 
+//弹窗宽字符版本
 int TWin::MessageBoxW(LPCWSTR msg, LPCWSTR title, UINT style)
 {
 	modalCount++;
@@ -658,7 +882,7 @@ BOOL TWin::Sleep(UINT mSec)
 }
 
 
-
+//获得控件上的内容
 UINT TWin::GetDlgItemTextU8(int ctlId, char *buf, int len)
 {
 	Wstr	wbuf(len);
@@ -733,28 +957,6 @@ int TWin::GetWindowTextLengthW(void)
 
 
 
-//获得窗口中内容长度
-//int TWin::GetWindowTextLengthU8(void)
-//{
-//	int		len = ::GetWindowTextLengthW(hWnd);
-//	Wstr	wbuf(len + 1);
-//
-//	if (::GetWindowTextW(hWnd, wbuf.Buf(), len + 1) <= 0) return 0;
-//
-//	return	WtoU8(wbuf.s(), NULL, 0);
-//}
-
-
-
-
-
-//BOOL TWin::SetWindowTextU8(const char *text)
-//{
-//	Wstr	wbuf(text);
-//	return	::SetWindowTextW(hWnd, wbuf.s());
-//}
-
-
 //向指定的窗体更新区域添加一个矩形，然后窗口客户区域的这一部分将被重新绘制
 BOOL TWin::InvalidateRect(const RECT *rc, BOOL fErase)
 {
@@ -787,7 +989,7 @@ WORD TWin::SetWindowWord(int index, WORD val)
 }
 
 
-
+//创建窗口
 BOOL TWin::CreateU8(LPCSTR className, LPCSTR title, DWORD style, DWORD exStyle, HMENU hMenu)
 {
 	Wstr	className_w(className, BY_UTF8);
@@ -796,7 +998,7 @@ BOOL TWin::CreateU8(LPCSTR className, LPCSTR title, DWORD style, DWORD exStyle, 
 	return	CreateW(className_w.s(), title_w.s(), style, exStyle, hMenu);//执行完这一句就产生任务栏图标    
 }
 
-
+//创建窗口
 BOOL TWin::Create(LPCSTR className, LPCSTR title, DWORD style, DWORD exStyle, HMENU hMenu)
 {
 	Wstr	className_w(className, BY_MBCS);

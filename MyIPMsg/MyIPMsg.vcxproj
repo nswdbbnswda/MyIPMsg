@@ -115,6 +115,7 @@
     <ClCompile Include="IPMsg.cpp" />
     <ClCompile Include="tapi32u8.cpp" />
     <ClCompile Include="tlib.cpp" />
+    <ClCompile Include="TMainWin.cpp" />
     <ClCompile Include="tmisc.cpp" />
     <ClCompile Include="TWin.cpp" />
   </ItemGroup>
@@ -124,6 +125,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="tapi32u8.h" />
     <ClInclude Include="tlib.h" />
+    <ClInclude Include="TMainWin.h" />
     <ClInclude Include="tmisc.h" />
     <ClInclude Include="TWin.h" />
   </ItemGroup>

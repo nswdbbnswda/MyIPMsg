@@ -29,6 +29,9 @@
     <ClCompile Include="tapi32u8.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="TMainWin.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.h">
@@ -44,6 +47,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="TWin.h" />
     <ClInclude Include="tapi32u8.h" />
+    <ClInclude Include="TMainWin.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MyIPMsg.rc">
