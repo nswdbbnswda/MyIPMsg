@@ -58,5 +58,11 @@
     <Image Include="icon1.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="背景.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="wuziqi.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

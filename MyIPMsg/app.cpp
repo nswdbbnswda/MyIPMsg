@@ -75,17 +75,18 @@ BOOL TApp::PreProcMsg(MSG * msg)
 //窗口消息处理函数
 LRESULT CALLBACK TApp::WinProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+
     TApp	*app = TApp::GetApp();
     TWin	*win = app->SearchWnd(hWnd); //Search方法是从wndArray中找到中找到窗口句柄为hWnd的TWin对象返回
 	if (win)//找到TMainWin的对象win，调用win->WinProc(uMsg, wParam, lParam)。
-        return	win->WinProc(uMsg, wParam, lParam);
+        return	win->WinProc(uMsg, wParam, lParam);//在第一次调用CreateWindowEx函数返回之前先会触发一条WM_CREATE消息,这里要把该消息转发给WinPro
 
-	//if ((win = app->preWnd))//这段代码没有进行分析，这段代码实际是对TMainWin窗口第一次消息处理进行的特殊判断。
-	//{
-	//    app->preWnd = NULL;
-	//    app->AddWinByWnd(win, hWnd);
-	//    return	win->WinProc(uMsg, wParam, lParam);
-	//}
+	if ((win = app->preWnd))//第一次调用CreateWindowEx时，在函数返回窗口句柄前，会触发WM_CREATE消息，这里是对该消息进行特殊处理
+	{
+	    app->preWnd = NULL;
+	    app->AddWinByWnd(win, hWnd);//在这里把第一个窗口对象加入到哈希表中
+	    return	win->WinProc(uMsg, wParam, lParam);
+	}
 		return	::DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 

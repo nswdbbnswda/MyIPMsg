@@ -27,7 +27,7 @@ public:
 	virtual BOOL	PreProcMsg(MSG *msg);//窗口消息预处理
 	LPCSTR	GetDefaultClass() { return defaultClass; }
 	LPCWSTR	GetDefaultClassW() { return defaultClassW; }
-	void	AddWin(TWin *win) { preWnd = win; }//添加一个窗口
+	void	AddWin(TWin *win) { preWnd = win; }
 	void	AddWinByWnd(TWin *win, HWND hWnd) {//添加一个窗口
 		win->hWnd = hWnd;
 		hash->Register(win, hash->MakeHashId(hWnd));

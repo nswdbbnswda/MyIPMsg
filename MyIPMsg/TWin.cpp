@@ -1,14 +1,15 @@
 #include "TWin.h"
 #include"app.h"
 #include<stdlib.h>
+#include"resource.h"
 TWin::TWin(TWin *_parent)
 {
 	hWnd = 0;
 	hAccel = NULL;
-	rect.left = 400;
+	rect.left = 450;
 	rect.right = 1000;//宽度
-	rect.top = 150;//矩形到上边界距离为130
-	rect.bottom = 600;//窗口高度
+	rect.top = 55;//矩形到上边界距离为130
+	rect.bottom = 630;//窗口高度
 	orgRect = rect;
 	parent = _parent;
 	sleepBusy = FALSE;
@@ -51,7 +52,7 @@ BOOL TWin::EvSysCommand(WPARAM uCmdType, POINTS pos)
 
 //创建事件
 BOOL TWin::EvCreate(LPARAM lParam)
-{
+{   
 	return	FALSE;
 }
 
@@ -122,6 +123,17 @@ BOOL TWin::EvQueryOpen(void)
 //绘图
 BOOL TWin::EvPaint(void)
 {
+	HDC         hdc;
+	HDC         hdcBuf;//缓存DC
+	PAINTSTRUCT ps;
+	RECT        rect;
+	hdc = GetDC(hWnd);//获得设备上下文
+	hdcBuf = CreateCompatibleDC(hdc);//缓存DC
+	HBITMAP hBmp;//位图
+	hBmp = LoadBitmap(TApp::GetInstance(), MAKEINTRESOURCE(IDB_BITMAP1));//获得位图句柄
+	SelectObject(hdcBuf, hBmp);//把位图选入DC
+	BitBlt(hdc, 0, 0, 535, 535, hdcBuf, 0, 0, SRCCOPY);
+	ReleaseDC(hWnd, hdc);
 	return	FALSE;
 }
 
@@ -396,15 +408,13 @@ BOOL TWin::CreateW(const WCHAR *className, const WCHAR *title, DWORD style, DWOR
 	if (className == NULL) {
 		className = TApp::GetApp()->GetDefaultClassW();
 	}
-
-	//TApp::GetApp()->AddWin(this);//把对象加入到哈希表中
+	 TApp::GetApp()->AddWin(this);
 
 	if ((hWnd = ::CreateWindowExW(exStyle, className, title, style,
 		rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, parent ? parent->hWnd : NULL, hMenu, TApp::GetInstance(), NULL)) == NULL)
 		return TApp::GetApp()->DelWin(this), FALSE;
 	else
 	{
-		TApp::GetApp()->AddWinByWnd(this, hWnd);//把这个窗口放到哈希表中,以窗口句柄值为索引值
 		this->Show(1);//显示窗口
 	}
 }
@@ -479,21 +489,27 @@ BOOL TWin::PreProcMsg(MSG *msg)
 
 //窗口处理函数
 LRESULT TWin::WinProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+{  
+
 	switch (uMsg)
 	{
 	case WM_LBUTTONDOWN:
 		MessageBox("L", "Tip!", 0);
 		break;
-
 	case WM_DESTROY:
 		EvDestroy();//关闭窗口
 		break;
 	case WM_CREATE:
-		MessageBox("Hello,World!", "Tip!", 0);
+		EvCreate(lParam);
 		break;
-	}
+	case WM_PAINT:
+		EvPaint();
+		break;
+	case WM_RBUTTONDOWN:
 
+		 break;
+	}
+	
 	return DefWindowProc(uMsg, wParam, lParam);
 	//BOOL	done = FALSE;
 	//LRESULT	result = 0;
